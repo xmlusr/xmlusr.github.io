@@ -81,7 +81,7 @@ theme: next-reloaded
 deploy:
   type: git
   repo: https://github.com/daem02/daem02.github.io.git
-  branch: master
+  branch: publish
 
 symbols_count_time:
   symbols: true
