@@ -130,7 +130,6 @@ menu:
 menu_settings:
   icons: true
   badges: false
-  home: home
 
 # ---------------------------------------------------------------
 # Scheme Settings
