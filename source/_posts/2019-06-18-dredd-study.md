@@ -2,12 +2,14 @@
 title: dredd study
 date: 2019-06-18 21:40:54
 tags:
-- dredd
-- apiary
+- Dredd
+- Apiary
 categories:
 - 测试
 ---
 > 最近被要求学习利用[apirary](https://help.apiary.io)进行测试，验证api文档与程序的一致性。apiary中的本地API测试工具是[dredd](https://help.apiary.io/tools/automated-testing/testing-local/)，在此记录如何用它对apiary中的文档进行验证。
+
+<!--more-->
 
 ## 使用方法
 1. 首先下载node，再用如下命令安装：
