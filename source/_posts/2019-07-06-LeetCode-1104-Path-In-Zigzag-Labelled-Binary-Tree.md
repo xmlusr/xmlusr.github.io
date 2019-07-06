@@ -37,6 +37,7 @@ Constraints:
 # Solution
 首先根据`label`计算所在行数，根据行数奇偶可以判断这一行的数是否逆序。逆序则计算正序时对应的值，然后`//2`得到上一层正序时的值，再判断上一层层数的奇偶性，若上一层是偶数层，则将数字转换为逆序时的值。重复此过程直到根节点。
 
+Python:
 ```python
 import math
 class Solution:
@@ -53,17 +54,51 @@ class Solution:
         ret.append(label)
         while label != 1:
             row = math.floor(math.log(label, 2) + 1)
-            if row % 2 == 0:
+            if row & 1 == 0:
                 label = self.findOriginIndex(label)
-                label //= 2
+                label >>= 1
                 ret.append(label)
                 continue
-            label //= 2
+            label >>= 1
             label = self.findOriginIndex(label)
             ret.append(label)
         ret.reverse()
         return ret
+```
 
-a = Solution()
-print(a.pathInZigZagTree(26))
+Java:
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+class Solution {
+    public int originIndex(int label){
+        int row = (int) Math.floor(Math.log(label) / Math.log(2) + 1);
+        int rowMin = (int) Math.pow(2, row - 1);
+        int rowMax = (int) (Math.pow(2,row) - 1);
+        int sm = rowMin + rowMax;
+        int ret = sm - label;
+        return ret;
+    }
+    public List<Integer> pathInZigZagTree(int label) {
+        List<Integer> ret = new ArrayList<Integer>();
+        ret.add(label);
+        if (1 == label) {
+        	return ret;
+        }
+        while (label != 1) {
+        	int row = (int) Math.floor(Math.log(label) / Math.log(2) + 1);
+        	if ((row & 1) == 0) {
+        		label = this.originIndex(label);
+        		label = label >> 1;
+        		ret.add(0, label);
+        		continue;
+        	}
+        	label = label >> 1;
+        	label = this.originIndex(label);
+        	ret.add(0,label);
+        }
+        return ret;
+    }
+}
 ```
