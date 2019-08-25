@@ -49,7 +49,7 @@ vi /etc/shadowsocks.json
 	"local_port":1080,
 	"password":"mypassword",
 	"timeout":300,
-	"method":"aes-256-cfb",
+	"method":"aes-256-cfb"
 }
 ```
 各个配置项的含义如下：
