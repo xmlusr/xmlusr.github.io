@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[复杂链表的复制]]></title>
+    <url>%2F2019%2F10%2F19%2F%E5%A4%8D%E6%9D%82%E9%93%BE%E8%A1%A8%E7%9A%84%E5%A4%8D%E5%88%B6%2F</url>
+    <content type="text"><![CDATA[Question输入一个复杂链表（每个节点中有节点值，以及两个指针，一个指向下一个节点，另一个特殊指针指向任意一个节点），返回结果为复制后复杂链表的head。（注意，输出结果中请不要返回参数中的节点引用，否则判题程序会直接返回空） Solution这题的random指针有点特殊，和next指针的性质不用，random指向的是next能遍历到的，即本身链表存在的指针，不会生成新的指针。 具体步骤如下： 复制链表，将A-&gt;B-&gt;C转换成A-&gt;A’-&gt;B-&gt;B’-&gt;C-&gt;C’的结构 找到random，遍历链表：A’-&gt;random = A-&gt;random-&gt;next ##这里就是random是本身存在与next的遍历中的，不然无法在第一步中复制 拆分链表，将A-&gt;A’-&gt;B-&gt;B’-&gt;C-&gt;C’转换成A-&gt;B-&gt;C的结构和A’-&gt;B’-&gt;C’两个链表 Codepython: 12345678910111213141516171819202122232425262728293031# -*- coding:utf-8 -*-# class RandomListNode:# def __init__(self, x):# self.label = x# self.next = None# self.random = Noneclass Solution: # 返回 RandomListNode def Clone(self, pHead): # write code here if pHead == None: return None cpHead = pHead while cpHead != None: tmp = RandomListNode(cpHead.label) tmp.next = cpHead.next cpHead.next = tmp cpHead = tmp.next cpHead = pHead while cpHead != None: cpNode = cpHead.next cpNode.random = cpHead.random.next if cpHead.random else None cpHead = cpNode.next cpHead = pHead ans = pHead.next while cpHead: cpNode = cpHead.next cpHead.next = cpNode.next cpHead = cpNode.next cpNode.next = cpHead.next if cpHead else None return ans]]></content>
+      <categories>
+        <category>剑指</category>
+      </categories>
+      <tags>
+        <tag>题解</tag>
+        <tag>链表</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[链表环入口]]></title>
+    <url>%2F2019%2F10%2F16%2F%E9%93%BE%E8%A1%A8%E7%8E%AF%E5%85%A5%E5%8F%A3%2F</url>
+    <content type="text"><![CDATA[Question给一个链表，若其中包含环，请找出该链表的环的入口结点，否则，输出null。 Solution通过两个快慢指针来判断是否存在环，若存在环，快指针最终必定在环内再次赶上慢指针；不存在环，则快指针先到达链表尾节点。 图中A是起点，B是环入口，C是快慢指针相遇的点，相遇时，快指针遍历的节点个数为： quick = x + a + b + a //快指针赶上慢指针必定是一个环的路程再加上慢指针在环上的路程 慢指针遍历的节点个数： slow = x + a 因为快指针2倍速于慢指针，所以有:quick = 2 * slow 即：x+a+b+a = 2*(x+a) =&gt; x = b 所以两指针相遇后，再设置一个从头开始的指针，与此时的慢指针一起跑，则在下一次慢指针与这个新指针相遇的地方就是环的入口。 1234567891011121314151617181920# -*- coding:utf-8 -*-# class ListNode:# def __init__(self, x):# self.val = x# self.next = Noneclass Solution: def EntryNodeOfLoop(self, pHead): # write code here pSlow = pHead pQuick = pHead while pQuick and pQuick.next: pQuick = pQuick.next.next pSlow = pSlow.next if pSlow==pQuick: pt = pHead while pt!=pSlow: pt = pt.next pSlow = pSlow.next return pt return None]]></content>
+      <categories>
+        <category>剑指</category>
+      </categories>
+      <tags>
+        <tag>题解</tag>
+        <tag>链表</tag>
+        <tag>数学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[984. 不含 AAA 或 BBB 的字符串]]></title>
+    <url>%2F2019%2F08%2F06%2F984-%E4%B8%8D%E5%90%AB-AAA-%E6%88%96-BBB-%E7%9A%84%E5%AD%97%E7%AC%A6%E4%B8%B2%2F</url>
+    <content type="text"><![CDATA[Question给定两个整数 A 和 B，返回任意字符串 S，要求满足： S 的长度为 A + B，且正好包含 A 个 ‘a’ 字母与 B 个 ‘b’ 字母；子串 ‘aaa’ 没有出现在 S 中；子串 ‘bbb’ 没有出现在 S 中。 示例 1： 123输入：A = 1, B = 2输出：&quot;abb&quot;解释：&quot;abb&quot;, &quot;bab&quot; 和 &quot;bba&quot; 都是正确答案。 示例 2： 12输入：A = 4, B = 1输出：&quot;aabaa&quot; 提示： 0 &lt;= A &lt;= 100 0 &lt;= B &lt;= 100 对于给定的 A 和 B，保证存在满足要求的 S。 Solution贪心算法：贪心算法（又称贪婪算法）是指，在对问题求解时，总是做出在当前看来是最好的选择。即不从整体最优上加以考虑，他所做出的是在某种意义上的局部最优解，而这种局部最优也即是全局最优。 官方题解的思想：设A为所剩数量多的字母，只有当已经连续A出现，否则下一个还是插入A，在插入的过程中不断判断何为剩余多的字母。 我的方法：假设B&gt;A，则直观的插法，两个BB,一个A，这样去插入，即BBABBA···这种形式，这样当B全部插完之后，若A还有剩余，再从头开始将之前的BB中间再插入一个A。大概思想就是这样，但有一些细节问题： 当MAX(A,B)==1时，属于特殊情况 BBABB这种情况要考虑，即最后一个A不是必要的，也即A的数量&gt;=B/2-1. BABABABA即A=B且B%2==1的特殊情况。上述细节都是对于我的代码而言，因为我是两个带一个这样插入的。 12345678910111213141516171819202122232425class Solution: def strWithout3a3b(self, A: int, B: int) -&gt; str: alpha = list(zip([A,B],['a','b'])) #left insert to right if A &gt; B: alpha = list(reversed(alpha)) if alpha[1][0] &lt;= 1: return alpha[1][0]*alpha[1][1]+alpha[0][1]*alpha[0][0] ans = '' m,n = divmod(alpha[1][0],2) cnt = alpha[0][0] for i in range(0,m): ans += alpha[1][1]*2 ans += alpha[0][1] cnt -= 1 if cnt == -1: ans = ans[:-1] cnt = 0 if n : ans += alpha[1][1] if cnt &gt; 0: ans = ans.replace(alpha[1][1]+alpha[1][1],alpha[1][1]+alpha[0][1]+alpha[1][1],cnt) if len(ans) &lt; A+B: ans += alpha[0][1]*(A+B-len(ans)) return ans]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>题解</tag>
+        <tag>Medium</tag>
+        <tag>递归</tag>
+        <tag>贪心算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[983. 最低票价]]></title>
+    <url>%2F2019%2F08%2F05%2F983-%E6%9C%80%E4%BD%8E%E7%A5%A8%E4%BB%B7%2F</url>
+    <content type="text"><![CDATA[Question在一个火车旅行很受欢迎的国度，你提前一年计划了一些火车旅行。在接下来的一年里，你要旅行的日子将以一个名为 days 的数组给出。每一项是一个从 1 到 365 的整数。 火车票有三种不同的销售方式： 一张为期一天的通行证售价为 costs[0] 美元； 一张为期七天的通行证售价为 costs[1] 美元； 一张为期三十天的通行证售价为 costs[2] 美元。 通行证允许数天无限制的旅行。 例如，如果我们在第 2 天获得一张为期 7 天的通行证，那么我们可以连着旅行 7 天：第 2 天、第 3 天、第 4 天、第 5 天、第 6 天、第 7 天和第 8 天。 返回你想要完成在给定的列表 days 中列出的每一天的旅行所需要的最低消费。 示例 1 12345678输入：days = [1,4,6,7,8,20], costs = [2,7,15]输出：11解释： 例如，这里有一种购买通行证的方法，可以让你完成你的旅行计划：在第 1 天，你花了 costs[0] = $2 买了一张为期 1 天的通行证，它将在第 1 天生效。在第 3 天，你花了 costs[1] = $7 买了一张为期 7 天的通行证，它将在第 3, 4, ..., 9 天生效。在第 20 天，你花了 costs[0] = $2 买了一张为期 1 天的通行证，它将在第 20 天生效。你总共花了 $11，并完成了你计划的每一天旅行。 提示： 123451 &lt;= days.length &lt;= 3651 &lt;= days[i] &lt;= 365days 按顺序严格递增costs.length == 31 &lt;= costs[i] &lt;= 1000 Solution如果第i天要出行的话，设dp[i]为第i天到最后一天的最小花费,有三种情况： 买1天的票，第i+1天到最后一天为一个新的子问题 买7天的票，第i+7天到最后一天为一个新的子问题 买30天的票，第i+30天到最后一天为一个新的子问题 动态规划方程为： 1dp[i]=min&#123;costs[0]+dp[i+1], costs[1]+dp[i+7], costs[2]+dp[i+30]&#125; 如果第i天不出门，则dp[i]=dp[i+1] python3 1234567891011121314151617class Solution: def dp(self,days, i, mydict, costs): if i &gt; days[-1]: return 0 if i in mydict: return mydict[i] if i not in days: mydict[i] = self.dp(days, i+1, mydict, costs) return mydict[i] a = costs[0] + self.dp(days, i+1, mydict, costs) b = costs[1] + self.dp(days, i+7, mydict, costs) c = costs[2] + self.dp(days, i+30, mydict, costs) ans = min(a, b, c) mydict[i] = ans return ans def mincostTickets(self, days: List[int], costs: List[int]) -&gt; int: return self.dp(days, 0, dict(), costs)]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>题解</tag>
+        <tag>Medium</tag>
+        <tag>动态规划</tag>
+        <tag>递归</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[139. 单词拆分]]></title>
+    <url>%2F2019%2F07%2F13%2F139-%E5%8D%95%E8%AF%8D%E6%8B%86%E5%88%86%2F</url>
+    <content type="text"><![CDATA[Question给定一个非空字符串 s 和一个包含非空单词列表的字典 wordDict，判定 s 是否可以被空格拆分为一个或多个在字典中出现的单词。 说明： 拆分时可以重复使用字典中的单词。 你可以假设字典中没有重复的单词。 示例 1： 123输入: s = &quot;leetcode&quot;, wordDict = [&quot;leet&quot;, &quot;code&quot;]输出: true解释: 返回 true 因为 &quot;leetcode&quot; 可以被拆分成 &quot;leet code&quot;。 示例 2： 1234输入: s = &quot;applepenapple&quot;, wordDict = [&quot;apple&quot;, &quot;pen&quot;]输出: true解释: 返回 true 因为 &quot;applepenapple&quot; 可以被拆分成 &quot;apple pen apple&quot;。 注意你可以重复使用字典中的单词。 示例 3： 12输入: s = &quot;catsandog&quot;, wordDict = [&quot;cats&quot;, &quot;dog&quot;, &quot;sand&quot;, &quot;and&quot;, &quot;cat&quot;]输出: false Solution1.递归回溯 若一个单词可以分解，则必有一个单词是s的前缀，将s分成两部分，若前一部分是一个单词，则判断后一部分是否可以分解，若后一部分也可以分解，则整个s都可以分解，这后一部分s和整个s的问题相似，所以利用递归求解子问题，将子问题结果用于这一层的求解。 python 1234567891011121314151617class Solution: def wb(self, s, myset, mem): if s in mem: return mem[s] length = len(s) if length == 0: return True for i in range(1,length+1): if s[:i] in myset and self.wb(s[i:],myset,mem): mem[s] = True return True mem[s] = False return False def wordBreak(self, s: str, wordDict: List[str]) -&gt; bool: mem = dict() myset = set(wordDict) return self.wb(s, myset, mem) 2.动态规划 假设当前要求s[:i]的结果，且s[:i-1]的结果已知。利用之前已经求出的解来解决当前问题，后面的问题也同样依赖当前的解作为已求解，这样的求解方式就是动态规划。 本题方法：设置dp数组，dp[i]表示字符串s[:i]是否是可分解的。dp[i]求解：将s[:i]以j分解成两部分s[:j]和s[j:i],若dp[j]==True，且s[j:i]是一个单词，则dp[i]=True。由于是判断后一部分是否为单词，所以将j从i开始递减判断,以此减少一些判断。 python 1234567891011class Solution: def wordBreak(self, s: str, wordDict: List[str]) -&gt; bool: myset = set(wordDict) dp = [False for i in range(len(s)+1)] dp[0] = True for i in range(1,len(s)+1): for j in range(i+1)[::-1]: if dp[j] and s[j:i] in myset: dp[i] = True break return dp[len(s)]]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>题解</tag>
+        <tag>Medium</tag>
+        <tag>动态规划</tag>
+        <tag>递归</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[213. House Robber II]]></title>
+    <url>%2F2019%2F07%2F09%2F213-House-Robber-II%2F</url>
+    <content type="text"><![CDATA[QuestionYou are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. All houses at this place are arranged in a circle. That means the first house is the neighbor of the last one. Meanwhile, adjacent houses have security system connected and it will automatically contact the police if two adjacent houses were broken into on the same night.Given a list of non-negative integers representing the amount of money of each house, determine the maximum amount of money you can rob tonight without alerting the police. Example 1: 1234Input: [2,3,2]Output: 3Explanation: You cannot rob house 1 (money = 2) and then rob house 3 (money = 2), because they are adjacent houses. Example 2: 1234Input: [1,2,3,1]Output: 4Explanation: Rob house 1 (money = 1) and then rob house 3 (money = 3). Total amount you can rob = 1 + 3 = 4. Solution和House Robber I的不同点就是房子是围城一个圈的，即若偷第一个房子，则最后一个房子不能偷了 第一个房子偷与不偷的两种情况如下： 偷第一个房子,则最后一个不能偷了，即nums[2:-1]按照House Robber I求解, 结果再加上nums[0] 不偷第一个房子，后面nums[1:]按照House Robber I求解 上面两种情况的最大值即为解。 Python: 12345678910111213141516171819202122class Solution: def rrob(self, nums, i, j,dc): if (i,j) in dc: return dc[(i,j)] length = j-i if length == 0 : return 0 if length &lt;= 2: return max(nums[i:j]) ans = max(self.rrob(nums,i+2,j,dc)+nums[i],self.rrob(nums,i+1,j,dc)) dc[(i,j)] = ans return ans def rob(self, nums: List[int]) -&gt; int: length = len(nums) if length == 0 : return 0 if length&lt;=3: return max(nums) ans = 0 dc = dict() ans = max(self.rrob(nums,2,length-1,dc)+nums[0],self.rrob(nums,1,length,dc)) return ans]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>题解</tag>
+        <tag>Medium</tag>
+        <tag>动态规划</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[1190.航班预订统计]]></title>
+    <url>%2F2019%2F07%2F08%2F1190-%E8%88%AA%E7%8F%AD%E9%A2%84%E8%AE%A2%E7%BB%9F%E8%AE%A1%2F</url>
+    <content type="text"><![CDATA[Question这里有 n 个航班，它们分别从 1 到 n 进行编号。我们这儿有一份航班预订表，表中第 i 条预订记录 bookings[i] = [i, j, k] 意味着我们在从 i 到 j 的每个航班上预订了 k 个座位。请你返回一个长度为 n 的数组 answer，按航班编号顺序返回每个航班上预订的座位数。 示例: 12输入：bookings = [[1,2,10],[2,3,20],[2,5,25]], n = 5输出：[10,55,45,25,25] 提示: 1231 &lt;= bookings.length &lt;= 200001 &lt;= bookings[i][0] &lt;= bookings[i][1] &lt;= n &lt;= 200001 &lt;= bookings[i][2] &lt;= 10000 Solution首先想到的是暴力求解，设置一个数组corp[n],遍历bookings，对于每一个bookings[i]，将i到j之间的所有corp[m]都加上K。但是无疑超时了。 然后是利用差分的思想，设置一个数组corp[n],每个corp[i]意义为 其比前一个corp[i-1]多出的航班座位数目。遍历bookings，对于每一个bookings[i]，将corp[i]+k,将corp[j+1]-k,这样i到j的航班座位数就能够根据首尾的两个值计算出来。公式是corp[i]=corp[i]+corp[i-1]。 Java: 12345678910111213141516class Solution &#123; public int[] corpFlightBookings(int[][] bookings, int n) &#123; int[] tag = new int[n]; for (int[] book : bookings)&#123; tag[book[0]-1] += book[2]; int j = book[1]; if (j&lt;n)&#123; tag[j]-=book[2]; &#125; &#125; for (int i=1;i&lt;n;i++)&#123; tag[i]=tag[i-1]+tag[i]; &#125; return tag; &#125;&#125; Python 12345678910class Solution: def corpFlightBookings(self, bookings: List[List[int]], n: int) -&gt; List[int]: answer = [0]*n for i in bookings: answer[i[0]-1]+=i[2] if i[1]&lt;n: answer[i[1]]-=i[2] for i in range(1,n): answer[i]=answer[i-1]+answer[i] return answer]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>题解</tag>
+        <tag>Medium</tag>
+        <tag>差分</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[LeetCode 1104.Path In Zigzag Labelled Binary Tree]]></title>
+    <url>%2F2019%2F07%2F06%2FLeetCode-1104-Path-In-Zigzag-Labelled-Binary-Tree%2F</url>
+    <content type="text"><![CDATA[QuestionIn an infinite binary tree where every node has two children, the nodes are labelled in row order.In the odd numbered rows (ie., the first, third, fifth,…), the labelling is left to right, while in the even numbered rows (second, fourth, sixth,…), the labelling is right to left. Given the label of a node in this tree, return the labels in the path from the root of the tree to the node with that label. Example 1: 12Input: label = 14Output: [1,3,4,14] Example 2: 12Input: label = 26Output: [1,2,6,10,26] Constraints: 11 &lt;= label &lt;= 10^6 Solution首先根据label计算所在行数，根据行数奇偶可以判断这一行的数是否逆序。逆序则计算正序时对应的值，然后//2得到上一层正序时的值，再判断上一层层数的奇偶性，若上一层是偶数层，则将数字转换为逆序时的值。重复此过程直到根节点。 Python: 12345678910111213141516171819202122232425import mathclass Solution: def findOriginIndex(self, label): row = math.floor(math.log(label, 2) + 1) rowMin = pow(2, row - 1) rowMax = pow(2, row) - 1 sm = rowMin + rowMax return sm - label def pathInZigZagTree(self, label: int): if label == 1: return [1] ret = [] ret.append(label) while label != 1: row = math.floor(math.log(label, 2) + 1) if row &amp; 1 == 0: label = self.findOriginIndex(label) label &gt;&gt;= 1 ret.append(label) continue label &gt;&gt;= 1 label = self.findOriginIndex(label) ret.append(label) ret.reverse() return ret Java: 123456789101112131415161718192021222324252627282930313233import java.util.ArrayList;import java.util.List;class Solution &#123; public int originIndex(int label)&#123; int row = (int) Math.floor(Math.log(label) / Math.log(2) + 1); int rowMin = (int) Math.pow(2, row - 1); int rowMax = (int) (Math.pow(2,row) - 1); int sm = rowMin + rowMax; int ret = sm - label; return ret; &#125; public List&lt;Integer&gt; pathInZigZagTree(int label) &#123; List&lt;Integer&gt; ret = new ArrayList&lt;Integer&gt;(); ret.add(label); if (1 == label) &#123; return ret; &#125; while (label != 1) &#123; int row = (int) Math.floor(Math.log(label) / Math.log(2) + 1); if ((row &amp; 1) == 0) &#123; label = this.originIndex(label); label = label &gt;&gt; 1; ret.add(0, label); continue; &#125; label = label &gt;&gt; 1; label = this.originIndex(label); ret.add(0,label); &#125; return ret; &#125;&#125;]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>题解</tag>
+        <tag>Medium</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[LeetCode 1103.Distribute Candies to People]]></title>
+    <url>%2F2019%2F07%2F05%2FLeetCode-1103-Distribute-Candies-to-People%2F</url>
+    <content type="text"><![CDATA[我们买了一些糖果 candies，打算把它们分给排好队的 n = num_people 个小朋友。给第一个小朋友 1 颗糖果，第二个小朋友 2 颗，依此类推，直到给最后一个小朋友 n 颗糖果。然后，我们再回到队伍的起点，给第一个小朋友 n + 1 颗糖果，第二个小朋友 n + 2 颗，依此类推，直到给最后一个小朋友 2 * n 颗糖果。重复上述过程（每次都比上一次多给出一颗糖果，当到达队伍终点后再次从队伍起点开始），直到我们分完所有的糖果。注意，就算我们手中的剩下糖果数不够（不比前一次发出的糖果多），这些糖果也会全部发给当前的小朋友。返回一个长度为 num_people、元素之和为 candies 的数组，以表示糖果的最终分发情况（即 ans[i] 表示第 i 个小朋友分到的糖果数） Example 1: 12Input: candies = 7, num_people = 4Output: [1,2,3,1] Example 2: 12Input: candies = 10, num_people = 3Output: [5,2,3] Constraints: 1 &lt;= candies &lt;= 10^91 &lt;= num_people &lt;= 1000 Solution第1次:1 2 3 … n (sum=one) 第2次：1+n 2+n 3+n … n+n (sum=one+n*n) 第3次:1+2n 2+2n 3+2n … n+2n (sum=one+2*n*n) 所以第i次：1+(i-1)n 2+(i-1)n … n+(i-1)n (sum=one+(i-1)*n*n) 首先计算能完整分发几次(总的不断减去sum判断余下的够不够下一个sum),将余下不足完成一次完整遍历的按上述规律一个个分发。 123456789101112131415161718192021222324252627282930313233343536373839class Solution: def distributeCandies(self, candies, num_people): one = (num_people+1)*num_people//2 ret = [] if one &gt;= candies: need = 1 i = 0 while candies &gt;= need: ret.append(need) candies -= need need += 1 i += 1 if candies &gt;0 : ret.append(candies) i += 1 while i &lt; num_people: ret.append(0) i += 1 return ret need = one i = 0 while candies &gt;= need: candies -= need i+=1 need = one + num_people*num_people*i tail = (i * i - i) // 2 * num_people ret = [j * i + tail for j in range(1, num_people + 1)] tail *= num_people pre = num_people * i need = pre + 1 i = 0 while candies &gt;= need: ret[i] += need i += 1 candies -= need need += 1 if candies &gt; 0: ret[i] += candies return ret]]></content>
+      <categories>
+        <category>LeetCode</category>
+      </categories>
+      <tags>
+        <tag>题解</tag>
+        <tag>Easy</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[install shadowsocks]]></title>
+    <url>%2F2019%2F07%2F03%2Finstall-shadowsocks%2F</url>
+    <content type="text"><![CDATA[每次安装ss的时候都要网上搜索教程，所以自己记录一下，以后要用的时候，不用再费力查找。还有自己经常忘记启动命令，这里也做个备忘录。 安装方法首先安装python pip(v2.6 or v2.7),对于RedHat系列和Debian系列，安装方法如下 针对Debain系列 1apt-get install python-pip 针对RedHat系列 1yum install python-setuptools &amp;&amp; easy_install pip 运行pip命令安装shadowsocks 1pip install shadowsocks 运行ssserver命令检查是否安装成功 运行服务开启ss服务有两种方法，一种是直接在命令行下输入参数启动： 1ssserver -p 8388 -k password -m aes-256-cfb 另一种是通过事先写好的配置文件启动，省去写端口、密码、加密方式的麻烦。 新建配置文件： 1vi /etc/shadowsocks.json 文件内容： 12345678&#123; "server":"my_server_ip", "server_port":443, "local_port":1080, "password":"mypassword", "timeout":300, "method":"aes-256-cfb"&#125; 各个配置项的含义如下： 配置项 含义 server 服务器ip地址(0.0.0.0) server_port 服务监听端口 local_port 本地转发端口 password 密码 timeout 连接超时时间 method 加密方式 用如下命令启动和停止： 1ssserver -c /etc/shadowsocks.json 后台运行和停止12ssserver -c /etc/shadowsocks.json -d startssserver -c /etc/shadowsocks.json -d stop 安装BBR加速 BBR 是 Google 提出的一种新型拥塞控制算法，可以使 Linux 服务器显著地提高吞吐量和减少 TCP 连接的延迟。 1.首先确认linux内核版本在4.9及以上，否则需要升级内核 1uname -r 2.开启BBR: 123echo &quot;net.core.default_qdisc=fq&quot; &gt;&gt; /etc/sysctl.confecho &quot;net.ipv4.tcp_congestion_control=bbr&quot; &gt;&gt; /etc/sysctl.confsysctl -p 3.验证 查看可用的拥塞控制算法 1sysctl net.ipv4.tcp_available_congestion_control 得到 net.ipv4.tcp_available_congestion_control = reno cubic bbr 检查BBR是否正常运行 1lsmod | grep tcp_bbr tcp_bbr 20480 1 4.速度测试 安装speedtest-cli 1pip install speedtest-cli 运行 1speedtest-cli Refershadowsocks官网: https://shadowsocks.org/en/index.html BBR项目地址: https://github.com/google/bbr Speed的github地址: https://github.com/sivel/speedtest-cli]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>Shadowsocks</tag>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[dredd study]]></title>
+    <url>%2F2019%2F06%2F18%2Fdredd-study%2F</url>
+    <content type="text"><![CDATA[最近被要求学习利用apirary进行测试，验证api文档与程序的一致性。apiary中的本地API测试工具是dredd，在此记录如何用它对apiary中的文档进行验证。 使用方法 首先下载node，再用如下命令安装：npm install dredd --global通过dredd --version查看版本 dredd init按照提示完成后生成dredd.yml，dredd.yml整个任务的配置项，包括要验证的文档名，使用hook的语言，生成的报告要发往的位置等等。 dredd运行测试程序，即可看到结果，如果配置了aipary的id的话，也可在apiary的Test部分看到带有颜色标记的测试结果。 生命周期由于要使用到hook,先介绍一下dredd的声明周期，便于知道何时使用hook。 解析apiary文档，报告解析错误或者警告，发现格式问题。 预处理apiary文档，对URI中的属性、JSON体等进检查是否存在无效参数或缺少必要参数。 生成HTTP的transaction,包括将head头、参数、url中的属性集成到一起。 载入hooks 运行测试 运行beforeAllhook 对于每一个transaction： 依次运行beforeEachhook、beforehook 发送HTTP请求 接受HTTP响应 运行beforeEachValidationhook 执行验证 运行afterhook、afterEachhook 运行afterAllhook 发送详细报告 hookhook是dreed中的最重要的部分，dredd支持的多种语言的hook,hook可以通过hook在请求前、响应后、比较前、比较后对特定一个或所有的transaction进行数据的修改，具体来说有如下一些作用： 处理身份验证问题，比如Authorization 在transaction之间传递数据，例如GET的值用于PUT 修改request中的样例值 改变预期的期望值 在验证前修改response的值，以符合预期 hook的类型及其执行时期 beforeAll 在整个测试运行之前执行，文档预运行之后 beforeEach 在每个transaction之前 before 在指定的transaction之前 beforeEachValidation 在每个transaction的response和文档中的预期对比验证之前 beforeValidation 在指定的transaction验证之前 after 在指定的transaction完成之后去 afterEach 在每个transaction完成之后 afterAll 在整个测试完成之后 dredd的参数dredd运行时有一些参数可以指定一些特殊行为,例如： --hookfiles, -f指定hooks文件 --names, -n只列出request的名称，不运行，这个名称就是上面的before``after中传入的参数，用于指定具体的transaction。 --only, -x只运行指定的transaction --sorted, -s指定transaction的执行顺序，顺序如下: CONNECT, OPTIONS, POST, GET, HEAD, PUT, PATCH, DELETE, TRACE.]]></content>
+      <categories>
+        <category>测试</category>
+      </categories>
+      <tags>
+        <tag>Dredd</tag>
+        <tag>Apiary</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Hexo采坑记录]]></title>
+    <url>%2F2019%2F06%2F01%2Fhexo%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95%2F</url>
+    <content type="text"><![CDATA[在用hexo搭建个人博客的的时候遇到了各种问题，想着比人也可能遇到，于是记录于此，以后若遇到新的关于hexo的问题，也将持续更新到本文。 1. hexo目录结构先了解hexo的目录结构，以及各个目录、文件作用是什么，遇到某些问题，自己也能尝试搞定，同时查到解决方法后也能很容易理解为何这样做。下面是我的hexo目录结构，有些文件夹没有展开，我在后面加上/。 themes是主题文件夹，就是界面展示的布局风格，我选择的next。 source最重要的文件夹，存放博客的源文件。 public和.deploy_git存放的内容都是生成的静态文件，区别我认为.deploy_git是已经发布到博客了的，即是hexo d产生的。而public是刚刚生成的，即hexo g产生的。 scaffolds是存放模板的文件夹，即hexo new [layout] &lt;filename&gt;中的layout选择项，默认post.md发布模板，draft.md草稿模板，page.md页面模板(不清楚)。node_modules是根据package.json和package-lock.json下载的node包，_config.yml是博客的配置文件。 db.json对文件资源进行记录。 yarn.lock是yarn命令安装模块时使用的。 dubug.json记录本地hexo server产生的日志。 重要的文件有三个： source文件夹 根目录下的_config.yml themes文件下主题文件中的_config.yml文件 复制这三个，就可以随意迁移博客了。 2. themes文件夹下的next内容不会被push到github估计因为next主题本身也是github项目，我在将其中的.git和.gitignore删除后，再git rm -r --cached next，取消对next之前的追踪记录。后就可以了，重要的应该是git命令。.git删除后，现在我无法更新next了…… 3. _config.yml中develop设置发布到master分支这是完全覆盖式的，将导致master分支之前的内容被抹掉。因此在设置哪个分支作为发布的分支要小心。 4. menu的图标无法显示menu的图标用的是font-awesome的，本来当运行hexo g的时候会在/lib文件下生成font-awesome文件夹，里面有所用的所有图标，但我的没有生成这个文件夹。解决方法：自己去font-awesome网站下载，然后放到lib目录下。]]></content>
+      <categories>
+        <category>Hexo</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+        <tag>Error</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Git常用的命令记录]]></title>
+    <url>%2F2019%2F06%2F01%2Fgit%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95%2F</url>
+    <content type="text"><![CDATA[在工作学习中经常要进行git操作，这里持续记录我常用到的各种命令以及在遇到的各种坑。 先放一张图便于后续讲述：最最常用的： git clone &lt;remote_url&gt; [foldname] 克隆远程仓库到本地，可设置本地文件夹名称 git add [filename/.] 将修改的文件添加到暂存区 git commit -m &quot;说明&quot; 将暂存区文件添加到分支 git branch 分支管理，-b 创建并切换，-d 删除 git checkout &lt;branch&gt; 切换分支 git reset --hard &lt;历史节点&gt; 重置当前所有分区状态到某个历史节点 git log 查看提交记录 git push/pull 推送和拉取分支 git rm --cached files 删除文件跟踪但不删创造文件系统中的文件,rm -f删除目录 git branch -a 从远程clone了repo后，只会在本地默认创建一个master分支，此时-a查看所有分支 git checkout -b &lt;本地分支名&gt; origin/&lt;远程分支名&gt; 创建本地分支并将其与远程分支关联 git push origin :&lt;删除的分支名&gt; 删除远程分支。利用git push [远程名] [本地分支]:[远程分支] 语法，如果省略 [本地分支]，那就等于是在说“在这里提取空白然后把它变成[远程分支]”。 git rest --hard/soft/mixed(default) 回到上次提交(可以指定具体哪个提交)，三种模式:hard，直接替换本地工作区和暂存区，不保留本地的已编辑内容；soft,保留本地的修改，同时将指定节点之后的那些即将被舍弃的提交恢复到暂存区，因此你只要commit就会回到最后的节点；mixed，和soft相似，但是是将暂存区的内容和即将被舍弃的提交都保存到暂存区。当commit了一些没用的代码，不想要了，重新开始就用hard,当你两次提交-m都是一样的内容，想合并，用soft;当add了一些代码进暂存区了，想撤销一些add,用mixed，全部回到工作区，再选择需要的进行add]]></content>
+      <categories>
+        <category>Git</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
+        <tag>命令</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[json字符串与对象转换]]></title>
+    <url>%2F2019%2F06%2F01%2Fjson%E5%AD%97%E7%AC%A6%E4%B8%B2%E4%B8%8Ejson%E5%AF%B9%E8%B1%A1%E8%BD%AC%E6%8D%A2%2F</url>
+    <content type="text"><![CDATA[json在实际web项目经常用到，而且常需要和DTO、VO进行转换,这里记录我这些天用到的。 1. org.json利用org.json的jsonArray和JSONObject，可以很容易对json字符串进行解析，但是不能转类对象。 1.1 maven依赖1234567&lt;dependencies&gt;&lt;dependency&gt;&lt;groupId&gt;org.json&lt;/groupId&gt;&lt;artifactId&gt;json&lt;/artifactId&gt;&lt;version&gt;20160212&lt;/version&gt;&lt;/dependency&gt;&lt;/dependencies&gt; 1.2 使用样例123String jsonStr = "&#123;\"id\":1,\"name\":\"JAVA\",\"stus\":[&#123;\"id\":101,\"name\":\"小明\",\"age\":16&#125;]&#125;";JSONObject json = new JSONObject(jsonStr);JSONArray arr = json.getJSONArray("stus"); 2. net.sf.json可以转类对象，但已多年未维护，并且当操作较大json数据时存在内存和cpu消耗严重问题。 2.1 maven依赖123456&lt;dependency&gt;&lt;groupId&gt;net.sf.json-lib&lt;/groupId&gt;&lt;artifactId&gt;json-lib&lt;/artifactId&gt;&lt;version&gt;2.4&lt;/version&gt;&lt;classifier&gt;jdk15&lt;/classifier&gt;//jar包区分jdk1.3和jdk1.5版本&lt;/dependency&gt; 2.2 使用样例123String jsonStr = "&#123;\"id\":1,\"name\":\"JAVA\",\"stus\":[&#123;\"id\":101,\"name\":\"小明\",\"age\":16&#125;]&#125;";JSONObject json = JSONObject.fromObject(jsonStr);String str = jsonStr.toString(); net.sf.json可以将json对象转换为一个类对象，不过对象的属性必须是基本数据类型。 student.java 12345678public class Student&#123;private int id;private String name;private int age;····/getter and setter/····&#125; 123String jsonStr = "&#123;\"id\":1,\"name\":\"小明\",\"age\":18&#125;";JSONObject json = JSONObject.fromObject(jsonStr);student stu = (student) JSONObject.toBean(json,Student.class); 3. fastjson同样可以进行类对象的转换，阿里巴巴开源框架，效率高 3.1 maven依赖12345&lt;dependency&gt;&lt;groupId&gt;com.alibaba&lt;/groupId&gt;&lt;artifactId&gt;fastjson&lt;/artifactId&gt;&lt;version&gt;1.2.37&lt;/version&gt;&lt;/dependency&gt; 3.2 使用样例1234String jsonStr = "&#123;\"id\":1,\"name\":\"小明\",\"age\":18&#125;";Student stu = JSON.parseObject(jsonStr,Student.class);JSONObject js = JSON.parseObject(jsonStr);String str=JSON.toJSONString(stu); 4. JacksonJackson是著名的处理JSON和XML格式化的类库。Jackson类库包含了很多注解，可以快速建立java类与JSON之间的关系。 例如：@JsonIgnoreProperties、@JsonIgnore注解用于排除某个属性; @JsonSerialize反序列化是将null值转为空字符串，序列化时删掉为null的属性。 4.1 maven依赖12345&lt;dependency&gt; &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt; &lt;artifactId&gt;jackson-core&lt;/artifactId&gt; &lt;version&gt;2.9.8&lt;/version&gt;&lt;/dependency&gt; 4.2 使用样例123456789101112String jsonStr = "&#123;\"id\":1,\"name\":\"小明\",\"age\":18&#125;";ObjectMapper mapper = new ObjectMapper();// Stirng to JSONObjectJsonNode rootNode = mapper.readTree(jsonString);String name = root.get("name").asText();JsonNode nameNode = rootNode.path("name");String name = nameNode.getTextValue();//Object to JSON ConversionStudent student = mapper.readValue(jsonStr, Student.class);//Object to JSON Conversion String jsonString = mapper.writeValueAsString(student);]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Json</tag>
+        <tag>字符串</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Markdown学习]]></title>
+    <url>%2F2019%2F05%2F29%2Fmarkdown%E5%AD%A6%E4%B9%A0%2F</url>
+    <content type="text"><![CDATA[使用hexo必然要会markdown语法，在github上找了一些，然后自己在这里再实战一下，并在以后不断实践，争取不再需要这篇blog。 用（#加一个空格）开始各级标题 一级题目二级题目三级标题· ·· 六级标题这是新的一段文字(段落前后空一行) &gt;表示一个区块引用 区块引用 代码块，每行开头空四格或者使用```，然后再 123public static void main(String[] args)&#123; System.out.println("这里是java代码")'&#125; 一个*斜体，两个**粗体，三个***分割线斜体粗体 用+-·表示一个无序表 无序表 无序表 数字加.表示有序表 第一项 第二项 链接用[]加()表示链接,图片在[]前面加! 用``引起来表示符号变量变量（符号） \表示转义，本文中的符号就是用\来表现的 表格用|实现，用和-和:实现对齐，下列为居中对齐： 123|a|b||:-:|:-:||1|2| a b 1 2]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>Markdown</tag>
+        <tag>语法</tag>
+      </tags>
+  </entry>
+</search>
